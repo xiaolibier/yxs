@@ -7,32 +7,42 @@
 	<meta content="yes" name="apple-mobile-web-app-capable">
 	<meta content="black" name="apple-mobile-web-app-status-bar-style">
 	<meta name="format-detection" content="telephone=no"/>
+	<link rel="stylesheet" href="../public/swipe/swipeslider.css" />
 	<link rel="stylesheet" href="../public/css/common.css" />
-	<title>红色汇</title>
+	<title>研学网</title>
+	<style>
+		.swipslider{margin:0;padding:0;}
+	</style>
 </head>
-<body class="commonBody m5">
-	<div class="m5_head">
-		<span class="m5h_tt">当前位置</span>
-		<span id="poicity" class="m5h_p"></span>
-		<a class="refresh_a" id="refabtn" href="javascript:;"><i></i>刷新</a>
+<body class="commonBody m6 m2 index m21">
+	<div class="header">
+		<ul class="h_menu"><li class="active">研学作业</li></ul>
+		<input id="ser_input" class="sle_input" type="text" />
+		<a href="javascript:;" id="backgo" class="bacc"></a>
 	</div>
-	<div class="m5_podiv">
-		<ul id="citys" class="m5p_left_list">
-			<!-- <li class="m5pli"><a>热门</a></li>
-			<li class="m5pli"><a>北京</a></li>
-			<li class="m5pli"><a>天津</a></li>
-			<li class="m5pli active"><a>河北</a></li>
-			<li class="m5pli"><a>山西</a></li> -->
-		</ul>
-		<ul id="childrens" class="m5p_right_list">
-			<!-- <li class="m5pli"><a>石家庄</a></li>
-			<li class="m5pli"><a>唐山</a></li>
-			<li class="m5pli"><a>秦皇岛</a></li>
-			<li class="m5pli"><a>邯郸</a></li>
-			<li class="m5pli"><a>邢台</a></li> -->
-		</ul>
-		
+	<div style="border-bottom:none;" class="intr_div2">
+		<!-- <h4 class="intr_t">研学作业<a class="inmore">更多</a></h4> -->
+		<div class="yxz_list">
+			<div class="yx_one">
+				<h4 class="yx_t">这里有着我们中华民族血的教训——南京大屠杀纪念馆</h4>
+				<p class="yx_p">作者：傅子梅</p>
+			</div>
+			<div class="yx_one">
+				<h4 class="yx_t">这里有着我们中华民族血的教训——南京大屠杀纪念馆</h4>
+				<p class="yx_p">作者：傅子梅</p>
+			</div>
+			<div class="yx_one">
+				<h4 class="yx_t">这里有着我们中华民族血的教训——南京大屠杀纪念馆</h4>
+				<p class="yx_p">作者：傅子梅</p>
+			</div>
+			<div class="yx_one">
+				<h4 class="yx_t">这里有着我们中华民族血的教训——南京大屠杀纪念馆</h4>
+				<p class="yx_p">作者：傅子梅</p>
+			</div>
+			
+		</div>
 	</div>
+	<!--  -->
 	
 	<script type="text/javascript" src="../public/libs/jquery.min.js"></script>
 	<script type="text/javascript" src="../public/laydate/laydate.js"></script>
@@ -40,8 +50,8 @@
 	<script type="text/javascript" src="../public/libs/base.js"></script>
 	<script type="text/javascript" src="../public/libs/layer.js"></script>
 	<script type="text/javascript" src="../public/libs/utils.js"></script>
+	<script type="text/javascript" src="../public/swipe/swipeslider.js"></script>
 	<script type="text/javascript" src="../public/js/common2.js"></script>
-	<script src="http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=js"></script>
 	
 </body>
 
@@ -49,40 +59,52 @@
 $(function(){
 	var g = {};
 	g.login_token = Utils.offLineStore.get("token",false) || "";
-	//g.id = Utils.getQueryString("id") || "";
+	g.id = Utils.getQueryString("id") || "";
+	//if(g.id == ''){g.id = Utils.offLineStore.get("venueaid",false);}
 	g.httpTip = new Utils.httpTip({});
 	g.totalPage = 1;//存总页数
 	g.nowPage = 0;//存当前页 0 是第一页
 	g.showPages = 10;//每页显示多少行
-	g.city = {};//存储所有城市列表
-	
+	var urls = ['','photo/','interview/','video/','pano/','article/','association/'];
+	g.p_name = ['','场馆照片','专家访谈','讲解风采','场馆全景','场馆动态','相关机构'];
+	//加载banner图
+	$('#full_feature').swipeslider({
+		        transitionDuration: 600,
+		        autoPlayTimeout: 10000,
+		        sliderHeight: '40%'
+		      });
 /* **************************************** lodding ******************************************** */	
 	
 	
-	loadPage();
-	$('#refabtn').on('click',getpoi);//刷新位置
-	
+	//loadPage();
 	
 /* **************************************** setTing ******************************************** */	
 
 	//加载页面
 	function loadPage(){
-		getpoi();//获取当前位置
-		getadds();//获取地址列表
+		getVenues();//获取场馆列表
+		getHotVenue();//获取热门场馆列表
+		getvenueother(1);//摄影
+		getvenueother(2);//访谈
+		getvenueother(5);//动态
+		getvenueother(6);//机构
 	}
 
-	//获取当前位置
-	function getpoi(){
-		var city = remote_ip_info['city'];
-		if(city == ''){city = '获取位置失败';}
-		$('#poicity').html(city);
-	}
+	//搜索框输入
+	$('#ser_input').keyup(function(){
+		var _val = $(this).val() || '';
+		//if(_val == ''){return false;}
+		getVenues(_val);
+	
+	});
 	
 	
-	//获取地址列表
-	function getadds(){
+	//获取场馆列表
+	function getVenues(ser){
+		var ser = ser || '';
 		var condi = {};
-		var url = Base.serverUrl + 'category/';
+		condi.search = ser;
+		var url = Base.serverUrl + "venue/";
 		//g.httpTip.show();
 		$.ajax({
 			url:url,
@@ -91,23 +113,22 @@ $(function(){
 			type:"GET",
 			dataType:'json',
 			context:this,
+			async: false,
 			success: function(data){
 				if(data){
-					var data = data.results || {};
-					var data = data[0] || {};
-					var citys = data.sub_cat || [];
-					g.city = {};//清空
-					var html = '';
-					for(var i=0,len=citys.length;i<len;i++){
-						var d = citys[i] || '';
-						var id = d.id || '';
-						var name = d.name || '';
-						var childrens = d.sub_cat || [];
-						g.city[id]= d;
-						html+='<li aid="'+id+'" class="m5pli"><a>'+name+'</a></li>';
-						
-					}
-					$('#citys').html(html);
+					var count = data.count || 0;
+					if(count > 0){
+						var data = data.results || [];
+						var html = '<option value="">场馆列表</option>';
+						for(var i=0,len=data.length;i<len;i++){
+							var d = data[i] || '';
+							var id = d.id || '';
+							var name = d.name || '';
+							var image_url = d.image_url || '../public/img/no.jpg';
+							html+='<option value="'+id+'">'+name+'</option>';
+						}
+						$('#vue_sel').html(html);
+					}		
 				}
 				else{
 					var msg = data.message || "获取失败";
@@ -123,43 +144,26 @@ $(function(){
 			}
 		});
 	}
-	//获取二级城市
-	$('#citys').on('click','.m5pli',function(){
-		
-		$(this).addClass('active').siblings('li').removeClass('active');
-		var aid = $(this).attr('aid') || '';
-		if(aid == ''){Utils.alert('城市id为空！');return false;}
-		var data = g.city[aid] || {};
-		var citys = data.sub_cat || [];
-		if(citys.length > 0){$('body,html').animate({scrollTop: 0}, 500);}
-		else{//页面跳转
-			isgovenue(aid);//查询城市下是否存在场馆 存在的跳转
-		}
-		var html = '';
-		for(var i=0,len=citys.length;i<len;i++){
-			var d = citys[i] || '';
-			var id = d.id || '';
-			var name = d.name || '';
-			var childrens = d.sub_cat || [];
-			html+='<li aid="'+id+'" class="m5pli"><a>'+name+'</a></li>';
-			
-		}
-		$('#childrens').html(html);
-		
-	});
-	//点击二级城市跳转
-	$('#childrens').on('click','.m5pli',function(){
-		var aid = $(this).attr('aid') || '';
-		if(aid == ''){Utils.alert('城市id为空！');return false;}
-		isgovenue(aid);//查询城市下是否存在场馆 存在的跳转
+	//选择场馆
+	$('#vue_sel').change(function(){
+		var _val =  $(this).find("option:selected").val();
+		if(_val == ''){return false;}
+		gourl(_val);
 	});
 	
-	//查询城市下是否存在场馆 存在的跳转
-	function isgovenue(aid){
-		var aid = aid || '';
+	//跳转到场馆列表页
+	window.gourl = function(id){
+		var id = id || '';
+		if(id == ''){Utils.alert('场馆不存在！');return false;}
+		Utils.offLineStore.set("venueaid",id,false);//存储当前场馆
+		location.href="mobile2.html?id="+id;
+	}
+	
+	
+	//获取热门场馆列表
+	function getHotVenue(){
 		var condi = {};
-		condi.category_id  = aid;
-		var url = Base.serverUrl + "venue/";
+		var url = Base.serverUrl + "venue_popular/";
 		//g.httpTip.show();
 		$.ajax({
 			url:url,
@@ -168,17 +172,88 @@ $(function(){
 			type:"GET",
 			dataType:'json',
 			context:this,
+			async: false,
 			success: function(data){
 				if(data){
 					var count = data.count || 0;
 					if(count > 0){
-						Utils.offLineStore.set("cityaid",aid,false);//存储当前城市
-						location.href="mobile6.html?id="+aid;
-						
+						var data = data.results || [];
+						var html = '';
+						for(var i=0,len=data.length;i<len;i++){
+							var d = data[i] || '';
+							var id = d.id || '';
+							var name = d.name || '';
+							var image_url = d.image_url || '../public/img/no.jpg';
+							html+='<li onclick="gourl(\''+id+'\')"><i style="background:url('+image_url+') no-repeat center center;background-size:cover;"></i><br/><span class="tt">'+name+'</span></li>';
+						}
+						var _w = count*$('#intr_list li').width()+180;
+						$('#intr_list').html(html).css('width',_w);
+
 					}else{
-						Utils.alert('该城市下暂无场馆！');
-					}
+						$('.intr_div').hide();
+					}		
 				}
+				else{
+					var msg = data.message || "获取失败";
+					Utils.alert(msg);
+				}
+				//g.httpTip.hide();
+			},
+			error:function(data,status){
+				//g.httpTip.hide();
+				if(status=='timeout'){
+		　　　　　  Utils.alert("超时");
+		　　　　}
+			}
+		});
+	}
+	
+	
+	//获取场馆其他部分列表
+	
+	
+	//获取列表 1场馆照片、2专家访谈、3讲解风采、4场馆全景
+	
+	function getvenueother(n){
+		var n = n || 1;
+		var ur = urls[n] || '';
+		var condi = {};
+		//condi.org_id = g.id;
+		var url = Base.serverUrl +ur;
+		//g.httpTip.show();
+		$.ajax({
+			url:url,
+			data:condi,
+			timeout: 30000, //超时时间设置，单位毫秒
+			type:"GET",
+			dataType:'json',
+			context:this,
+			async: false,
+			success: function(data){
+				if(data){
+					var count = data.count || 0;
+					if(count > 0){
+						var data = data.results || [];
+						var html = '';
+						var img = '../public/img/no.jpg';
+						for(var i=0,len=data.length;i<len;i++){
+							var d = data[i] || '';
+							var id = d.id || '';
+							var image_url = d.image_url || '../public/img/no.jpg';
+							var image_min_url = d.image_min_url || '../public/img/no.jpg';
+							if(i==0){img = image_url}//获取第一张照片
+							if(n==1 && i==0){img = image_min_url}//获取第一张照片
+						}
+						$('.cg_img'+n).css({'background':'url('+img+') no-repeat center center','background-size':'cover'}).on('click',function(){
+							Utils.offLineStore.set("venueaid",'index',false);//存储当前场馆
+							Utils.offLineStore.set("venuep",n,false);//存储第几个
+							location.href="mobile3.html?id="+'index'+'&p='+n;//id传空 说明主页过去的
+						});
+					}else{
+						$('.m6_head'+n).hide();
+						$('.cg_img'+n).parents('.changguan_list').hide();
+					}		
+				}	
 				else{
 					var msg = data.message || "获取失败";
 					//Utils.alert(msg);
@@ -193,8 +268,18 @@ $(function(){
 			}
 		});
 	}
+	//首页上面几个图标点击调转
+	$('.aimg').on('click',function(){
+		var p = $(this).attr('art') || '';
+		if(p == ''){return false;}
+		Utils.offLineStore.set("venueaid",'index',false);//存储当前场馆
+		Utils.offLineStore.set("venuep",p,false);//存储第几个
+		location.href="mobile3.html?id="+'index'+'&p='+p;//id传空 说明主页过去的
+		
+	});
 	
-	
+
+
 });
 
 </script>

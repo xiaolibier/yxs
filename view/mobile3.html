@@ -7,24 +7,76 @@
 	<meta content="yes" name="apple-mobile-web-app-capable">
 	<meta content="black" name="apple-mobile-web-app-status-bar-style">
 	<meta name="format-detection" content="telephone=no"/>
+	<link rel="stylesheet" href="../public/swipe/swipeslider.css" />
 	<link rel="stylesheet" href="../public/css/common.css" />
-	<title>红色汇</title>
+	<title>研学网</title>
+	<style>
+		.swipslider{margin:0;padding:0;}
+	</style>
 </head>
-<body class="commonBody m6 m3">
-	<div class="m6_head">
-		<span id="p_name" class="title1"></span>
-		<!-- <span class="title2">已入住18家场馆</span> -->
-		<input id="ser_input" class="sle_input" placeholder="点击搜索" type="text" />
+<body class="commonBody m6 m2 index m21 m3">
+	<div class="header">
+		<ul class="h_menu"><li class="active">国际课程</li><li>国内课程</li></ul>
+		<input id="ser_input" class="sle_input" type="text" />
 		<a href="javascript:;" id="backgo" class="bacc"></a>
 	</div>
-	<div id="vue_list" class="changguan_list">
-		<!-- <div class="cg_one">
-			<div class="cg_img" style="background:url('../public/img/m3_1.png') no-repeat center center;background-size:cover;"></div>
+	<div class="banner_div"> 
+		<figure id="full_feature" class="swipslider">
+			<ul class="sw-slides">
+			 <li class="sw-slide">
+				<img src="../public/img/summer_beach.jpg" alt="Summer beach concept">
+			  </li>
+			  <li class="sw-slide">
+				<img src="../public/img/lang_yie_ar_kung_fu.jpg" alt="Lang from Yie Ar Kung Fu">
+			  </li>       
+			  <li class="sw-slide">
+				<img src="../public/img/tiny_vacation.jpg" alt="Tiny Tina">
+			  </li>
+			  <li class="sw-slide">
+				<img src="../public/img/borderlands_tiny_tina.jpg" alt="Tiny Tina from Borderlands 2">
+			  </li>
+			  <li class="sw-slide">
+				<img src="../public/img/redhead.jpg" alt="Redhead girl">
+			  </li>
+			</ul>
+		  </figure>
+	</div>
+	<ul class="for_ul">
+		<!-- <li><a href="javascript:;" art='4' class="aimg aimg1"></a></li> -->
+		<li><a href="javascript:;" art='2' class="aimg aimg2"></a></li>
+		<li><a href="javascript:;" art='3' class="aimg aimg3"></a></li>
+		<li><a href="javascript:;" art='1' class="aimg aimg4"></a></li>
+	</ul>
+	
+	<div class="m21_div">
+		<div class="m21d_d">
+			<select id="vue_sel" class="sle"><option value="">选择城市</option></select>
 		</div>
-		<div class="cg_one">
-			<div class="cg_img" style="background:url('../public/img/m3_1.png') no-repeat center center;background-size:cover;"></div>
-		</div> -->
-		<!-- <div class="showmore_div"><a class="showm_a" href="javascript:;">点击加载更多</a></div> -->
+		<div class="m21_list">
+			<div class="m21_one">
+				<div style="background:url(../public/img/m3_1.png) no-repeat center center;background-size:cover;" class="mone_l"></div>
+				<div class="mone_r">
+					<h4 class="yx_t">湖北麻城革命根据地</h4>
+					<p class="yx_p">麻城是著名的革命老根据地；是“黄麻起义”的策源地之一，红四军、红二十八军的组建地，著名的苏区</p>
+				</div>
+			</div>
+			<div class="m21_one">
+				<div style="background:url(../public/img/m3_1.png) no-repeat center center;background-size:cover;" class="mone_l"></div>
+				<div class="mone_r">
+					<h4 class="yx_t">湖北麻城革命根据地</h4>
+					<p class="yx_p">麻城是著名的革命老根据地；是“黄麻起义”的策源地之一，红四军、红二十八军的组建地，著名的苏区</p>
+				</div>
+			</div>
+			<div class="m21_one">
+				<div style="background:url(../public/img/m3_1.png) no-repeat center center;background-size:cover;" class="mone_l"></div>
+				<div class="mone_r">
+					<h4 class="yx_t">湖北麻城革命根据地</h4>
+					<p class="yx_p">麻城是著名的革命老根据地；是“黄麻起义”的策源地之一，红四军、红二十八军的组建地，著名的苏区</p>
+				</div>
+			</div>
+			
+			
+		</div>
 	</div>
 	
 	
@@ -34,6 +86,7 @@
 	<script type="text/javascript" src="../public/libs/base.js"></script>
 	<script type="text/javascript" src="../public/libs/layer.js"></script>
 	<script type="text/javascript" src="../public/libs/utils.js"></script>
+	<script type="text/javascript" src="../public/swipe/swipeslider.js"></script>
 	<script type="text/javascript" src="../public/js/common2.js"></script>
 	
 </body>
@@ -42,55 +95,52 @@
 $(function(){
 	var g = {};
 	g.login_token = Utils.offLineStore.get("token",false) || "";
-	g.id = Utils.getQueryString("id") || "";//场馆id
-	if(g.id == ''){g.id = Utils.offLineStore.get("venueaid",false);}
-	g.p = Utils.getQueryString("p") || "";//获取当前是第几个 1场馆照片、2专家访谈、3讲解风采、4场馆全景
-	if(g.p == ''){g.p = Utils.offLineStore.get("venuep",false);}
+	g.id = Utils.getQueryString("id") || "";
+	//if(g.id == ''){g.id = Utils.offLineStore.get("venueaid",false);}
 	g.httpTip = new Utils.httpTip({});
 	g.totalPage = 1;//存总页数
 	g.nowPage = 0;//存当前页 0 是第一页
 	g.showPages = 10;//每页显示多少行
+	var urls = ['','photo/','interview/','video/','pano/','article/','association/'];
 	g.p_name = ['','场馆照片','专家访谈','讲解风采','场馆全景','场馆动态','相关机构'];
-	var usrs = ['','photo/','interview/','video/','pano/','article/','association/'];
-	
+	//加载banner图
+	$('#full_feature').swipeslider({
+		        transitionDuration: 600,
+		        autoPlayTimeout: 10000,
+		        sliderHeight: '40%'
+		      });
 /* **************************************** lodding ******************************************** */	
 	
 	
-	loadPage();
-	//返回按钮
-	$('#backgo').on('click',function(){
-		if(g.id == 'index' && g.p != ''){//判断是首页跳过来的
-			location.href="./index.html";
-		}else{
-			location.href="./mobile2.html?id="+g.id;
-		}
-		
-	});
-	
+	//loadPage();
 	
 /* **************************************** setTing ******************************************** */	
 
 	//加载页面
 	function loadPage(){
-		getvenueother(g.p);//获取列表 1场馆照片、2专家访谈、3讲解风采、4场馆全景
-		$('#p_name').html(g.p_name[g.p]);//填充标题
+		getVenues();//获取场馆列表
+		getHotVenue();//获取热门场馆列表
+		getvenueother(1);//摄影
+		getvenueother(2);//访谈
+		getvenueother(5);//动态
+		getvenueother(6);//机构
 	}
-	//获取列表 1场馆照片、2专家访谈、3讲解风采、4场馆全景
-	
+
 	//搜索框输入
 	$('#ser_input').keyup(function(){
 		var _val = $(this).val() || '';
-		getvenueother(g.p,_val);
+		//if(_val == ''){return false;}
+		getVenues(_val);
 	
 	});
 	
-	function getvenueother(n,ser){
-		var n = n || 1;
+	
+	//获取场馆列表
+	function getVenues(ser){
 		var ser = ser || '';
 		var condi = {};
-		if(g.id != 'index')condi.org_id = g.id;
 		condi.search = ser;
-		var url = Base.serverUrl + usrs[n];
+		var url = Base.serverUrl + "venue/";
 		//g.httpTip.show();
 		$.ajax({
 			url:url,
@@ -98,8 +148,67 @@ $(function(){
 			timeout: 30000, //超时时间设置，单位毫秒
 			type:"GET",
 			dataType:'json',
-			async: false,
 			context:this,
+			async: false,
+			success: function(data){
+				if(data){
+					var count = data.count || 0;
+					if(count > 0){
+						var data = data.results || [];
+						var html = '<option value="">场馆列表</option>';
+						for(var i=0,len=data.length;i<len;i++){
+							var d = data[i] || '';
+							var id = d.id || '';
+							var name = d.name || '';
+							var image_url = d.image_url || '../public/img/no.jpg';
+							html+='<option value="'+id+'">'+name+'</option>';
+						}
+						$('#vue_sel').html(html);
+					}		
+				}
+				else{
+					var msg = data.message || "获取失败";
+					Utils.alert(msg);
+				}
+				//g.httpTip.hide();
+			},
+			error:function(data,status){
+				//g.httpTip.hide();
+				if(status=='timeout'){
+		　　　　　  Utils.alert("超时");
+		　　　　}
+			}
+		});
+	}
+	//选择场馆
+	$('#vue_sel').change(function(){
+		var _val =  $(this).find("option:selected").val();
+		if(_val == ''){return false;}
+		gourl(_val);
+	});
+	
+	//跳转到场馆列表页
+	window.gourl = function(id){
+		var id = id || '';
+		if(id == ''){Utils.alert('场馆不存在！');return false;}
+		Utils.offLineStore.set("venueaid",id,false);//存储当前场馆
+		location.href="mobile2.html?id="+id;
+	}
+	
+	
+	//获取热门场馆列表
+	function getHotVenue(){
+		var condi = {};
+		var url = Base.serverUrl + "venue_popular/";
+		//g.httpTip.show();
+		$.ajax({
+			url:url,
+			data:condi,
+			timeout: 30000, //超时时间设置，单位毫秒
+			type:"GET",
+			dataType:'json',
+			context:this,
+			async: false,
 			success: function(data){
 				if(data){
 					var count = data.count || 0;
@@ -109,38 +218,77 @@ $(function(){
 						for(var i=0,len=data.length;i<len;i++){
 							var d = data[i] || '';
 							var id = d.id || '';
+							var name = d.name || '';
+							var image_url = d.image_url || '../public/img/no.jpg';
+							html+='<li onclick="gourl(\''+id+'\')"><i style="background:url('+image_url+') no-repeat center center;background-size:cover;"></i><br/><span class="tt">'+name+'</span></li>';
+						}
+						var _w = count*$('#intr_list li').width()+180;
+						$('#intr_list').html(html).css('width',_w);
+
+					}else{
+						$('.intr_div').hide();
+					}		
+				}
+				else{
+					var msg = data.message || "获取失败";
+					Utils.alert(msg);
+				}
+				//g.httpTip.hide();
+			},
+			error:function(data,status){
+				//g.httpTip.hide();
+				if(status=='timeout'){
+		　　　　　  Utils.alert("超时");
+		　　　　}
+			}
+		});
+	}
+	
+	
+	//获取场馆其他部分列表
+	
+	
+	//获取列表 1场馆照片、2专家访谈、3讲解风采、4场馆全景
+	
+	function getvenueother(n){
+		var n = n || 1;
+		var ur = urls[n] || '';
+		var condi = {};
+		//condi.org_id = g.id;
+		var url = Base.serverUrl +ur;
+		//g.httpTip.show();
+		$.ajax({
+			url:url,
+			data:condi,
+			timeout: 30000, //超时时间设置，单位毫秒
+			type:"GET",
+			dataType:'json',
+			context:this,
+			async: false,
+			success: function(data){
+				if(data){
+					var count = data.count || 0;
+					if(count > 0){
+						var data = data.results || [];
+						var html = '';
+						var img = '../public/img/no.jpg';
+						for(var i=0,len=data.length;i<len;i++){
+							var d = data[i] || '';
+							var id = d.id || '';
 							var image_url = d.image_url || '../public/img/no.jpg';
 							var image_min_url = d.image_min_url || '../public/img/no.jpg';
-							var image_max_url = d.image_max_url || '../public/img/no.jpg';
-							var video_url = d.video_url || '';
-							var pano_url = d.pano_url || '';
-							var org = d.org || '';
-							var name = d.name || '';
-							var desc = d.desc || '';
-							var image_url2 = org.image_url || '../public/img/no.jpg';//全景预览图片
-							if(n == 1){image_url = image_min_url;video_url = image_max_url;}//第一个是场馆图片
-							if(n == 2){video_url = image_url;}//第二个是访谈图片
-							//if(n == 3){}//第三个是点击跳转讲解视频
-							if(n == 4){
-								video_url = pano_url;
-								if(video_url != '' && video_url.indexOf('http:') <= -1){video_url = 'http://'+video_url;}
-								//image_url = image_url2;
-							}//第四个是点击跳转全景
-							
-							if(n == 5){//第5个是动态	
-								html+='<div class="cg_one"><a href="detail.html?id='+id+'">'
-									+'<div class="cg_text" style="text-align:left;padding:0 3%;color:#283B42;font-size:24px;">'+name+'</div>'
-									+'<div class="cg_img" style="color:#9B9B9B;height:44px;overflow:hidden;font-size:16px;margin:10px 3%;" >'+desc+'</div>'
-								+'</a></div>';
-							}else{
-								html+='<div class="cg_one"><a href="'+video_url+'">'
-									+'<div class="cg_img" style="background:url('+image_url+') no-repeat center center;background-size:cover;"></div>'
-									+'<div class="cg_text">'+name+'</div>'
-								+'</a></div>';
-							}
+							if(i==0){img = image_url}//获取第一张照片
+							if(n==1 && i==0){img = image_min_url}//获取第一张照片
 						}
-						$('#vue_list').html(html);
-					}	
+						$('.cg_img'+n).css({'background':'url('+img+') no-repeat center center','background-size':'cover'}).on('click',function(){
+							Utils.offLineStore.set("venueaid",'index',false);//存储当前场馆
+							Utils.offLineStore.set("venuep",n,false);//存储第几个
+							location.href="mobile3.html?id="+'index'+'&p='+n;//id传空 说明主页过去的
+						});
+					}else{
+						$('.m6_head'+n).hide();
+						$('.cg_img'+n).parents('.changguan_list').hide();
+					}		
 				}	
 				else{
 					var msg = data.message || "获取失败";
@@ -156,11 +304,17 @@ $(function(){
 			}
 		});
 	}
-	//点击打开
-	window.openurl = function(url){
-		var url = url || '';
-		window.open(url);
-	}
+	//首页上面几个图标点击调转
+	$('.aimg').on('click',function(){
+		var p = $(this).attr('art') || '';
+		if(p == ''){return false;}
+		Utils.offLineStore.set("venueaid",'index',false);//存储当前场馆
+		Utils.offLineStore.set("venuep",p,false);//存储第几个
+		location.href="mobile3.html?id="+'index'+'&p='+p;//id传空 说明主页过去的
+		
+	});
+	
+
 
 });
 
