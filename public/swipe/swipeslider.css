@@ -68,7 +68,9 @@
   -webkit-user-select: none;
      -moz-user-select: none;
       -ms-user-select: none;
-          user-select: none; }
+          user-select: none; 
+	display:none;	  
+}
   .sw-next-prev:hover {
     background-color: rgba(255, 255, 255, 0.74); }
   .sw-next-prev:active {
