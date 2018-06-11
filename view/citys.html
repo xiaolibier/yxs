@@ -49,7 +49,7 @@
 $(function(){
 	var g = {};
 	g.login_token = Utils.offLineStore.get("token",false) || "";
-	//g.id = Utils.getQueryString("id") || "";
+	g.html = Utils.getQueryString("html") || "";
 	g.httpTip = new Utils.httpTip({});
 	g.totalPage = 1;//存总页数
 	g.nowPage = 0;//存当前页 0 是第一页
@@ -82,7 +82,7 @@ $(function(){
 	//获取地址列表
 	function getadds(){
 		var condi = {};
-		var url = Base.serverUrl + 'category/';
+		var url = Base.serverUrl + 'city/';
 		//g.httpTip.show();
 		$.ajax({
 			url:url,
@@ -157,41 +157,13 @@ $(function(){
 	//查询城市下是否存在场馆 存在的跳转
 	function isgovenue(aid){
 		var aid = aid || '';
-		var condi = {};
-		condi.category_id  = aid;
-		var url = Base.serverUrl + "venue/";
-		//g.httpTip.show();
-		$.ajax({
-			url:url,
-			data:condi,
-			timeout: 30000, //超时时间设置，单位毫秒
-			type:"GET",
-			dataType:'json',
-			context:this,
-			success: function(data){
-				if(data){
-					var count = data.count || 0;
-					if(count > 0){
-						Utils.offLineStore.set("cityaid",aid,false);//存储当前城市
-						location.href="mobile6.html?id="+aid;
-						
-					}else{
-						Utils.alert('该城市下暂无场馆！');
-					}
-				}
-				else{
-					var msg = data.message || "获取失败";
-					//Utils.alert(msg);
-				}
-				//g.httpTip.hide();
-			},
-			error:function(data,status){
-				//g.httpTip.hide();
-				if(status=='timeout'){
-		　　　　　  Utils.alert("超时");
-		　　　　}
-			}
-		});
+		if(g.html == ''){
+			Utils.alert('返回页面为空！即将返回首页');
+			setTimeout(function(){ location.href="index.html"; },1000);
+			return false;
+		}
+		location.href = g.html+".html?cid="+aid;//跳转带上城市id
+		
 	}
 	
 	

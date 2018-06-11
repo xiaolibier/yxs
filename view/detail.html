@@ -7,30 +7,19 @@
 	<meta content="yes" name="apple-mobile-web-app-capable">
 	<meta content="black" name="apple-mobile-web-app-status-bar-style">
 	<meta name="format-detection" content="telephone=no"/>
-	<link rel="stylesheet" href="../public/swipe/swipeslider.css" />
 	<link rel="stylesheet" href="../public/css/common.css" />
-	<title>研学网</title>
-	<style>
-		.swipslider{margin:0;padding:0;}
-	</style>
+	<title>红色汇</title>
 </head>
-<body class="commonBody m6 m2 index m21">
-	<div class="header">
-		<ul class="h_menu"><li class="active">研学作业</li></ul>
-		<input id="ser_input" class="sle_input" type="text" />
-		<a href="index.html" class="bacc"></a>
+<body class="commonBody m6 m4">
+	<div class="m6_head">
+		<span id="detail_tt" class="title1">详情</span>
+		<!-- <span class="title2">已入住18家场馆</span> -->
+		<a id="backgo" href="javascript:;" class="bacc"></a>
 	</div>
-	<div style="border-bottom:none;" class="intr_div2">
-		<!-- <h4 class="intr_t">研学作业<a class="inmore">更多</a></h4> -->
-		<div class="yxz_list m21_list">
-			<!-- <div class="yx_one">
-				<h4 class="yx_t">这里有着我们中华民族血的教训——南京大屠杀纪念馆</h4>
-				<p class="yx_p">作者：傅子梅</p>
-			</div> -->
-			
-		</div>
+	<div id="details" class="changguan_list">
+		
 	</div>
-	<!--  -->
+	
 	
 	<script type="text/javascript" src="../public/libs/jquery.min.js"></script>
 	<script type="text/javascript" src="../public/laydate/laydate.js"></script>
@@ -38,7 +27,6 @@
 	<script type="text/javascript" src="../public/libs/base.js"></script>
 	<script type="text/javascript" src="../public/libs/layer.js"></script>
 	<script type="text/javascript" src="../public/libs/utils.js"></script>
-	<script type="text/javascript" src="../public/swipe/swipeslider.js"></script>
 	<script type="text/javascript" src="../public/js/common2.js"></script>
 	
 </body>
@@ -46,40 +34,51 @@
 <script>
 $(function(){
 	var g = {};
-	g.login_token = Utils.offLineStore.get("token",false) || "";
-	g.id = Utils.getQueryString("id") || "";
-	g.tag = Utils.getQueryString("tag") || "";
-	//if(g.id == ''){g.id = Utils.offLineStore.get("venueaid",false);}
+	//g.login_token = Utils.offLineStore.get("token",false) || "";
+	g.p = Utils.getQueryString("p") || "";//识别是第几个
+	g.tag = Utils.getQueryString("tag") || "";//区分 国内 地方 国际 国内等
+	g.id = Utils.getQueryString("id") || "";//id
 	g.httpTip = new Utils.httpTip({});
 	g.totalPage = 1;//存总页数
 	g.nowPage = 0;//存当前页 0 是第一页
 	g.showPages = 10;//每页显示多少行
-
+	var urls = ['','course_detail/','review_detail/','feedback_detail/','policy_detail/'];
+	var burl = ['','mobile21','mobile4','mobile5','mobile6'];
+	g.p_name = ['','课程详情','回顾详情','作业详情','政策详情'];
+	
 /* **************************************** lodding ******************************************** */	
 	
 	
 	loadPage();
+	//返回按钮
+	$('#backgo').on('click',function(){
+		var url = burl[g.p] || '';
+		location.href= url+'.html?tag='+g.tag;
+		
+	});
+	
 	
 /* **************************************** setTing ******************************************** */	
 
 	//加载页面
 	function loadPage(){
-		getDatalist();//获取 课程列表
+		if(g.p == '' || g.id == ''){
+			Utils.alert('数据错误，即将跳转首页');
+			setTimeout(function(){ location.href = "index.html"; },1000);
+			return false;
+		}
+		$('#detail_tt').html(g.p_name[g.p]);
+		getvenue();//获取详情
+		
 	}
-
 	
-	//搜索框输入
-	$('#ser_input').keyup(function(){
-		var _val = $(this).val() || '';
-		//if(_val == ''){return false;}
-		getDatalist();//获取 课程列表
-	});
-	//获取 列表
-	function getDatalist(){
-		var ser = $('#ser_input').val() || '';
+	//获取详情
+	function getvenue(){
+		var id = g.id || '';
+		if(id == ''){Utils.alert('id不能为空！');return false;}
 		var condi = {};
-		condi.search = ser;
-		var url = Base.serverUrl + "feedback/";
+		condi.id = id;
+		var url = Base.serverUrl + urls[g.p];
 		//g.httpTip.show();
 		$.ajax({
 			url:url,
@@ -88,56 +87,49 @@ $(function(){
 			type:"GET",
 			dataType:'json',
 			context:this,
+			async: false,
 			success: function(data){
 				if(data){
 					var count = data.count || 0;
 					if(count > 0){
 						var data = data.results || [];
 						var html = '';
+						var text = '';
 						for(var i=0,len=data.length;i<len;i++){
 							var d = data[i] || '';
 							var id = d.id || '';
 							var name = d.name || '';
-							var author = d.author || '';
-							var image_url = d.image_url || '../public/img/no.jpg';
-							
-							html+='<div aid="'+id+'" class="yx_one">'
-									+'<h4 class="yx_t">'+name+'</h4>'
-									+'<p class="yx_p">作者：'+author+'</p>'
+							var desc = d.desc || '';
+							var detail = d.detail || '';
+							if(detail != ''){desc = detail;}
+							if(i==0){
+							  html+='<div class="cg_one">'
+									+'<div class="cg_text" style="text-align:left;padding:0 3%;color:#283B42;font-size:24px;">'+name+'</div>'
+									+'<div class="cg_img" style="color:#9B9B9B;height:auto;overflow:hidden;font-size:16px;margin:10px 3%;" >'+desc+'</div>'
 								+'</div>';
-								
-							
+							}//获取第一个
 						}
-						$('.m21_list').html(html);
+						$('#details').html(html);
+						
 					}else{
-						Utils.alert('查询为空！');
-						$('.m21_list').html('');
-					}
-				}
+						
+					}		
+				}	
 				else{
 					var msg = data.message || "获取失败";
-					//Utils.alert(msg);
-					$('.m21_list').html('');
+					Utils.alert(msg);
 				}
 				//g.httpTip.hide();
 			},
 			error:function(data,status){
 				//g.httpTip.hide();
-				$('.m21_list').html('');
 				if(status=='timeout'){
 		　　　　　  Utils.alert("超时");
 		　　　　}
 			}
 		});
 	}
-	//点击跳转详情页
-	$('.m21_list').on('click','.yx_one',function(){
-		var id = $(this).attr('aid') || '';
-		if(id == ''){Utils.alert('id不能为空！');return false;}
-		location.href = "detail.html?id="+id+'&p='+3+'&tag='+g.tag;
-		
-	});
-
+	
 
 });
 

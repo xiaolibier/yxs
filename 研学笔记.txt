@@ -1,0 +1,50 @@
+http://www.yanxueonline.cn/api/  --研学api接口列表
+http://www.yanxueonline.cn/docs/  --交互接口列表
+http://www.yanxueonline.cn/org/org_list --网站
+https://lanhuapp.com/web/#/item/board?pid=e0541019-8b1b-4d07-9411-4e525ed5d49e --研学原型
+https://lanhuapp.com/web/#/item/board?pid=f8de8837-ab09-4079-9435-207f546445ab --红色会原型
+
+
+
+"city": "http://www.yanxueonline.cn/api/city/" 城市 列表 查询搜索
+
+"org": "http://www.yanxueonline.cn/api/org/",机构列表
+
+"policy_tag": "http://www.yanxueonline.cn/api/policy_tag/",政策标签 国家政策 地方政策
+
+"policy": "http://www.yanxueonline.cn/api/policy/",政策列表
+
+"policy_detail": "http://www.yanxueonline.cn/api/policy_detail/",政策内容 id 
+
+"course_category": "http://www.yanxueonline.cn/api/course_category/",课程分类 人文 红色 科技
+
+"course_tag": "http://www.yanxueonline.cn/api/course_tag/",课程标签 国内研学 国际研学
+
+"course": "http://www.yanxueonline.cn/api/course/",课程列表
+
+"course_detail": "http://www.yanxueonline.cn/api/course_detail/",课程详情
+
+"review": "http://www.yanxueonline.cn/api/review/",回顾列表
+
+"review_detail": "http://www.yanxueonline.cn/api/review_detail/",回顾详情
+
+"feedback": "http://www.yanxueonline.cn/api/feedback/",研学作业列表
+
+"feedback_detail": "http://www.yanxueonline.cn/api/feedback_detail/",研学作业详情
+
+"video": "http://www.yanxueonline.cn/api/video/" 精彩视频列表 
+
+
+问题：
+
+1、往期回顾 和 研学作业 没有数据；
+2、course接口 好像没有字段识别 国内课程还是国际课程 course_category接口也是；
+3、org接口报错 没有返回；
+
+
+
+
+
+
+
+
